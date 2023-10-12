@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { FileComponent } from './file.component';
 import { CommonModule } from '@angular/common';
+import { ImageCropperModule } from 'ngx-image-cropper';
 
 @NgModule({
 	declarations: [
@@ -10,7 +11,8 @@ import { CommonModule } from '@angular/common';
 		FileComponent
 	],
 	imports: [
-		CommonModule
+		CommonModule,
+		ImageCropperModule
 	]
 })
 

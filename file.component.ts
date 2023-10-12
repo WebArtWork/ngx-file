@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ImageCroppedEvent } from 'ngx-image-cropper';
 import { FileService } from './file.service';
 import { HttpService } from 'wacom';
 
@@ -20,18 +21,22 @@ export class FileComponent implements OnInit {
 
 	@Input() resize: number;
 
+	@Input() width: number;
+
+	@Input() height: number;
+
 	@Input() value: string | string[] = this.multiple ? [] : '';
 
 	@Output() update = new EventEmitter();
 
-	get files(): string [] {
+	get files(): string[] {
 		return this.value as string[];
 	}
 
 	constructor(
-		private _fs: FileService,
-		private _http: HttpService
-	) {}
+		private _http: HttpService,
+		private _fs: FileService
+	) { }
 
 	ngOnInit(): void {
 		if (!this.multiple && this.value) {
@@ -39,13 +44,33 @@ export class FileComponent implements OnInit {
 		}
 	}
 
+	croppedDataUrl: string;
+	dataUrl: string;
 	set() {
 		this._fs.setFile = (dataUrl: string) => {
-			this._http.post('/api/file/photo', {
+			if (this.width && this.height) {
+				this.dataUrl = dataUrl;
+			} else {
+				this.uploadImage(dataUrl);
+			}
+		};
+	}
+
+	imageCropped(event: ImageCroppedEvent) {
+		this.croppedDataUrl = event.base64 as string;
+	}
+
+	uploadImage(dataUrl = this.croppedDataUrl) {
+		this._http.post(
+			'/api/file/photo',
+			{
 				container: this.container,
 				name: this.name,
 				dataUrl
-			}, url => {
+			},
+			(url) => {
+				this.dataUrl = '';
+
 				if (this.multiple) {
 					if (!this.value) {
 						this.value = [];
@@ -59,7 +84,7 @@ export class FileComponent implements OnInit {
 				}
 
 				this.update.emit(this.value);
-			});
-		};
+			}
+		);
 	}
 }
