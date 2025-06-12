@@ -1,13 +1,14 @@
-import { NgModule } from '@angular/core';
-import { FileComponent } from './file.component';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 import { ImageCropperModule } from 'ngx-image-cropper';
+import { ButtonComponent } from '../button/button.component';
 import { FileCropperComponent } from './file-cropper/file-cropper.component';
-import { ButtonModule } from '../button/button.module';
+import { FileComponent } from './file.component';
+
 
 @NgModule({
 	declarations: [FileCropperComponent, FileComponent],
 	exports: [FileComponent],
-	imports: [ImageCropperModule, CommonModule, ButtonModule]
+	imports: [ImageCropperModule, CommonModule, ButtonComponent]
 })
 export class FileModule {}
